@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlannerMcp", "PlannerMcp\PlannerMcp.csproj", "{B67164DD-A85C-41B0-9A22-6A1776A1CA7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "clean-project", "clean-project\clean-project.csproj", "{1676D5CB-EA06-463C-807B-565712137055}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,9 +12,5 @@ Global
 		{B67164DD-A85C-41B0-9A22-6A1776A1CA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B67164DD-A85C-41B0-9A22-6A1776A1CA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B67164DD-A85C-41B0-9A22-6A1776A1CA7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1676D5CB-EA06-463C-807B-565712137055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1676D5CB-EA06-463C-807B-565712137055}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1676D5CB-EA06-463C-807B-565712137055}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1676D5CB-EA06-463C-807B-565712137055}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
