@@ -1,40 +1,41 @@
-## Relevant documentation
-Semantic Kernel (SK):
-https://github.com/microsoft/semantic-kernel
+## Relevant Documentation
 
-MS MCP SDK:
-https://github.com/modelcontextprotocol/csharp-sdk
+**Semantic Kernel (SK):**  
+[https://github.com/microsoft/semantic-kernel](https://github.com/microsoft/semantic-kernel)
 
-Working MCP server config sections examples:
+**MS MCP SDK:**  
+[https://github.com/modelcontextprotocol/csharp-sdk](https://github.com/modelcontextprotocol/csharp-sdk)
 
-Note: "--no-build" flag is required, otherwise I see connection errors.
+### Working MCP Server Config Examples
 
+Note: `--no-build` flag is required, otherwise connection errors may occur.
 
-    "PlannerMcp": {
-      "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
-        "--no-build"
-      ],
-      "disabled": false,
-      "autoApprove": [],
-      "debug": true,
-      "options": {
-        "shell": true,
-        "cwd": "C:\\Work\\Projects\\Planner-Mcp"
-      },
-      "env": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "PlannerMcp-minimal-working-config": {
-      "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
-        "--no-build"
-      ]
-    }
+```json
+"PlannerMcp": {
+  "command": "dotnet",
+  "args": [
+    "run",
+    "--project",
+    "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
+    "--no-build"
+  ],
+  "disabled": false,
+  "autoApprove": [],
+  "debug": true,
+  "options": {
+    "shell": true,
+    "cwd": "C:\\Work\\Projects\\Planner-Mcp"
+  },
+  "env": {
+    "DOTNET_ENVIRONMENT": "Development"
+  }
+},
+"PlannerMcp-minimal-working-config": {
+  "command": "dotnet",
+  "args": [
+    "run",
+    "--project",
+    "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
+    "--no-build"
+  ]
+}
