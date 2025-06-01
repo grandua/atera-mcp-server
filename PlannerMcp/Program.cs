@@ -1,15 +1,27 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ModelContextProtocol.Server;
-using System.ComponentModel;
+using Microsoft.SemanticKernel;
+using ModelContextProtocol.Server; // Added for MCP SDK attributes
+using System.ComponentModel; // Added for Description attribute
+using System.Threading.Tasks;
+using PlannerMcp;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
     .WithToolsFromAssembly();
-await builder.Build().RunAsync();
+
+var host = builder.Build();
+
+// Modern SK kernel initialization
+var kernel = Kernel.CreateBuilder()
+    // .AddOpenAIChatCompletion(modelId: "your-model", apiKey: "your-key")
+    .Build();
+
+await PromptOptimizer.RunExample(kernel);
+
+await host.RunAsync();
 
 [McpServerToolType]
 public static class EchoTool
