@@ -1,3 +1,10 @@
+## Relevant documentation
+Semantic Kernel (SK):
+https://github.com/microsoft/semantic-kernel
+
+MS MCP SDK:
+https://github.com/modelcontextprotocol/csharp-sdk
+
 Working MCP server config sections examples:
 
 Note: "--no-build" flag is required, otherwise I see connection errors.
