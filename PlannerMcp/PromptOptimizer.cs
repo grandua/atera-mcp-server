@@ -13,7 +13,7 @@ Rewrite the user request into a single comprehensive task that:
 2. Preserves all original requirements
 3. Is specific and actionable (include verbs like ""create"", ""implement"", ""refactor"")
 4. Removes redundancy
-5> Follows KISS
+5. Follows KISS
 
 Example transformation:
 Input: ""First fix the bugs, then add tests, finally optimize performance""

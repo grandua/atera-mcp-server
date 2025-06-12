@@ -4,7 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlannerMcp", "PlannerMcp\Pl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{7D79CA76-C34D-4BA1-938D-E9647AC10C09}"
 	ProjectSection(SolutionItems) = preProject
-		software-planner-mcp-server.md = software-planner-mcp-server.md
 		ReadMe.md = ReadMe.md
 	EndProjectSection
 EndProject
