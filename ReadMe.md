@@ -1,76 +1,76 @@
 ## About Project
 
 This project is to convert .NET8/MCP SDK project copied from Planner MCP server 
-into .NET 9 porject for Atera API ticket management MCP server.
+into .NET project for Atera API ticket management MCP server.
 PlannerMcp has a fully working Echo 101 MCP tool.
 Eventually we will convert this PlannnerMCP MCP server into Atera MCP server for Atera API.
 
 
 ## To Do
 
-Below is the detailed implementation roadmap for evolving this repo from a .NET 8 proof-of-concept into a production-ready .NET 9 Atera MCP server.
+At this stage the **sole goal** is to prove that this codebase functions as a compliant **MCP server**.  
+We will add **1‒3 high-value integration tests** that cover the critical MCP flows and nothing else.
+
+### 🎯 Target Integration Tests
+| # | Scenario | MCP Method(s) | Expected Outcome |
+|---|-----------|---------------|------------------|
+| 1 | **Server handshake** | `implementation/get` | Server responds with non-empty `name` & `version` |
+| 2 | **Tool discovery** | `tool/list` | Response array contains `echo` tool with correct signature |
+| 3 | **Echo round-trip** | `tools/call` (params: `{"name": "Echo", ...}`)| Input text is returned, wrapped in a content object |
+
+All tests will be written with **xUnit** and executed via `dotnet test --filter "Category=Integration"`.
+
+---
 
 ### 1️⃣  Short-Term Goals (MVP)
-- [ ] Green-field integration test proving the Echo 101 MCP tool can **start ➜ initialise ➜ respond**  
+- [ ] Green-field integration test proving the MCP server can **start ➜ initialise ➜ respond**  
   - Command: `dotnet test --filter "Category=Integration"`
 - [ ] Basic logging via **Microsoft.Extensions.Logging**
-- [ ] Port solution & projects to **.NET 9.0-preview**
-- [ ] Continuous Integration pipeline with `dotnet restore`, build, and test using GitHub Actions.
 
-### 2️⃣  Mid-Term Goals
-- [ ] Implement `Tickets.Get`, `Tickets.Create`, `Tickets.UpdateStatus` Atera endpoints
-- [ ] Dockerfile and GitHub Actions release workflow
-- [ ] End-to-end tests against Atera sandbox API
+---
 
-### 3️  Mid-Term Goals
-- [ ] Error handling
-
-### CRC Cards
-
+### CRC Cards (minimal)
 | Class | Responsibilities | Collaborators |
 |-------|------------------|---------------|
-| `Program` | Wire up DI container, host configuration, start web host | `Startup` |
-| `Startup` | Register services, middlewares, MCP tool routes | `Program`, `EchoController`, `TicketController` |
-| `EchoController` | HTTP/MCP endpoint `/echo` -> validates request -> calls service | `EchoService` |
-| `EchoService` | Core echo logic, transformation, telemetry | `EchoController` |
-| `TicketController` | MCP endpoints for ticket operations | `TicketService` |
-| `TicketService` | Talks to **Atera REST API**, performs business rules | `TicketController`, `AteraClient` |
-| `AteraClient` | Low-level HTTP wrapper for Atera API with resiliency | `TicketService` |
-| `SemanticKernelService` | Hosts SK planners & skills | `TicketService`, `EchoService` |
+| `Program` | Configure DI, register tools, start MCP server via stdio transport | `EchoTool`, `HelloWorldMcpServer` |
+| `EchoTool` | Implements `Echo` and `ReverseEcho` MCP tools | `Program` |
+| `HelloWorldMcpServer` | Implements `SayHello` MCP tool | `Program` |
+| `PromptOptimizer` | Demonstrates SK usage (non-critical) | `Program` |
 
 ---
 
 ### Navigation Map
-
 ```mermaid
 flowchart TD
-    Client -->|HTTP/MCP| EchoController --> EchoService
-    Client --> TicketController --> TicketService --> AteraClient
-    EchoService --> SemanticKernelService
-    TicketService --> SemanticKernelService
+    Client -->|"implementation/get" & "tool/list"| Program
+    Client -->|"tools/call" (params: {name:'Echo', ...})| EchoTool
+    Client -->|"tool/sayHello.call"| HelloWorldMcpServer
 ```
 
+#### Call Stack & Parameters (happy-path)
+1. **Handshake**  
+   • Request: `implementation/get {}`  
+   • Response: `{ name: string, version: string }`
+2. **Tool Catalogue**  
+   • Request: `tool/list {}`  
+   • Response: `{ "tools": [ { "name": "Echo", ... }, { "name": "ReverseEcho", ... }, { "name": "SayHello", ... } ] }`
+3. **Echo Round-Trip**  
+   • Request: `tools/call { "name": "Echo", "arguments": { "message": "hello" } }`  
+   • Program routes to `EchoTool.Echo(message:"hello")`  
+   • Response: `{ "result": { "content": [{ "type": "text", "text": "Hello from C#: hello" }], "isError": false } }`
+4. **Hello Round-Trip**  
+   • Request: `tool/sayHello.call {}`  
+   • Program routes to `HelloWorldMcpServer.SayHello()`  
+   • Response: `{ result: "Hello World from MCP Server!" }`
+
 ---
 
-### Example Call Stack (to-be)
-
-1. **MCP Request** `POST /echo`  
-   Parameters: `message: string`
-2. `EchoController.EchoAsync(message)`
-3. `EchoService.EchoAsync(message)`
-4. `SemanticKernelService.RunSkillAsync("reflect", message)`
-5. `EchoService.MapResponse(kernelResult)`
-6. `EchoController.Ok(response)`
-
-All parameters bubble through exactly once; all methods are **async** and return `Task<T>`.
+### Testing Notes
+- Start server with `dotnet run --no-build` in test fixture.
+- Use **JsonRpc.Client** to send requests and assert responses.
+- Tests run sequentially to avoid port conflicts.
 
 ---
-
-### Testing Strategy (T-DD starting point)
-
-- Create failing test `EchoTool_Should_ReturnSameText`
-- Implement minimal code to pass
-- Refactor & add edge-case table-driven tests
 
 ### 3rd Party Dependencies
 
