@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using Xunit.Abstractions;
 
-namespace PlannerMcp.IntegrationTests;
+namespace AteraMcp.IntegrationTests;
 
     public class TestProcess : IDisposable
     {

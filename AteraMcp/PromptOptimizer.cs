@@ -1,7 +1,7 @@
 using Microsoft.SemanticKernel;
 using System.Threading.Tasks;
 
-namespace PlannerMcp
+namespace AteraMcp
 {
     public class PromptOptimizer
     {

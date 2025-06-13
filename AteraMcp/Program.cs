@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 
-namespace PlannerMcp;
+namespace AteraMcp;
 
 public class Program
 {

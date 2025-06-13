@@ -1,9 +1,9 @@
 ## About Project
 
-This project is to convert .NET8/MCP SDK project copied from Planner MCP server 
+This project is to convert .NET8/MCP SDK project copied from Atera MCP server 
 into .NET project for Atera API ticket management MCP server.
-PlannerMcp has a fully working Echo 101 MCP tool.
-Eventually we will convert this PlannnerMCP MCP server into Atera MCP server for Atera API.
+AteraMcp has a fully working Echo 101 MCP tool.
+Eventually we will convert this AteraMcp MCP server into Atera MCP server for Atera API.
 
 
 ## To Do
@@ -85,12 +85,12 @@ flowchart TD
 Note: `--no-build` flag is required, otherwise connection errors may occur.
 
 ```json
-"PlannerMcp": {
+"AteraMcp": {
   "command": "dotnet",
   "args": [
     "run",
     "--project",
-    "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
+    "C:\\Work\\Projects\\Atera-Mcp\\AteraMcp\\AteraMcp.csproj",
     "--no-build"
   ],
   "disabled": false,
@@ -98,18 +98,18 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
   "debug": true,
   "options": {
     "shell": true,
-    "cwd": "C:\\Work\\Projects\\Planner-Mcp"
+    "cwd": "C:\\Work\\Projects\\Atera-Mcp"
   },
   "env": {
     "DOTNET_ENVIRONMENT": "Development"
   }
 },
-"PlannerMcp-minimal-working-config": {
+"AteraMcp-minimal-working-config": {
   "command": "dotnet",
   "args": [
     "run",
     "--project",
-    "C:\\Work\\Projects\\Planner-Mcp\\PlannerMcp\\PlannerMcp.csproj",
+    "C:\\Work\\Projects\\Atera-Mcp\\AteraMcp\\AteraMcp.csproj",
     "--no-build"
   ]
 }

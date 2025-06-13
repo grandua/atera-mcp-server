@@ -6,25 +6,25 @@ using System.Text.Json;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace PlannerMcp.IntegrationTests;
+namespace AteraMcp.IntegrationTests;
 
 [Trait("Category", "Integration")]
-public class PlannerMcpServerTests : IDisposable
+public class AteraMcpServerTests : IDisposable
 {
     private readonly string _serverPath;
     private readonly ITestOutputHelper _output;
 
-    public PlannerMcpServerTests(ITestOutputHelper output)
+    public AteraMcpServerTests(ITestOutputHelper output)
     {
         _output = output;
         
-        var testDir = Path.GetDirectoryName(typeof(PlannerMcpServerTests).Assembly.Location);
-        _serverPath = Path.GetFullPath(Path.Combine(testDir!, @"..\..\..\..", "PlannerMcp", "bin", "Debug", "net8.0", 
-            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "PlannerMcp.exe" : "PlannerMcp"));
+        var testDir = Path.GetDirectoryName(typeof(AteraMcpServerTests).Assembly.Location);
+        _serverPath = Path.GetFullPath(Path.Combine(testDir!, @"..\..\..\..", "AteraMcp", "bin", "Debug", "net8.0", 
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "AteraMcp.exe" : "AteraMcp"));
 
         if (!File.Exists(_serverPath))
         {
-            throw new InvalidOperationException($"Could not find PlannerMcp executable at: {_serverPath}");
+            throw new InvalidOperationException($"Could not find AteraMcp executable at: {_serverPath}");
         }
         process = new TestProcess(_serverPath, _output);
         process.Start();
