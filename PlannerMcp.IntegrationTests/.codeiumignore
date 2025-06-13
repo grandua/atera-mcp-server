@@ -1,11 +1,4 @@
-.idea/**
 */obj/**
-*/bin/**
-*.dll
-
-# Logs
-*.log
-
 
 # Dependency directories
 node_modules/
@@ -17,7 +10,6 @@ node_modules/
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 # OS specific
 .DS_Store
