@@ -147,3 +147,21 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
     "--no-build"
   ]
 }
+```
+
+## Configuration Setup
+
+1. **API Key Configuration**:
+   - For development, use user secrets:
+     ```bash
+     dotnet user-secrets init
+     dotnet user-secrets set "Atera:ApiKey" "your_api_key_here"
+     ```
+   - For production, set environment variable:
+     ```
+     Atera__ApiKey=your_api_key_here
+     ```
+
+2. **Configuration Files**:
+   - `appsettings.json`: Template configuration (checked into source control)
+   - `appsettings.Development.json`: Local overrides (gitignored)
