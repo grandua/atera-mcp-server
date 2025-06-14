@@ -3,9 +3,73 @@
 This project is to create .NET9/MCP SDK/SK project MCP server 
 for Atera API ticket management.
 
+See also C:\Work\Projects\Fiverr\AteraMcpServer\Clients-project-overview-and-acceptance-criteria.md
+and C:\Work\Projects\Fiverr\AteraMcpServer\Python-Reference-Code-Analysis.md
+
+
+### Python Project from Client for Reference
 Client provided a Python project for the same purpose
-and it can found and used for reference here: 
-C:\Work\Projects\Fiverr\Python-reference-atera-mcp-server\.
+and it can found and used for reference here:
+C:\Work\Projects\Fiverr\Python-reference-atera-mcp-server\
+
+
+## Milestone 1: Python Reference Code Analysis
+
+### GetAgentList API Analysis
+
+Based on analysis of the Python reference code at `C:\Work\Projects\Fiverr\Python-reference-atera-mcp-server\`:
+
+#### Endpoint Details
+- Base URL: `https://app.atera.com`
+- Endpoint: `/api/v3/agents` 
+- Method: GET
+- Authentication: API Key in `X-API-KEY` header
+
+#### Request Parameters
+- Optional query params:
+  - `page`: Page number for pagination (default: 1)
+  - `itemsInPage`: Items per page (default: 100)
+
+#### Response Structure
+```json
+{
+  "items": [
+    {
+      "agentID": "integer",
+      "customerID": "integer", 
+      "customerName": "string",
+      "machineID": "string",
+      "machineName": "string",
+      "deviceType": "string",
+      "domain": "string",
+      "onlineStatus": "boolean",
+      "lastRebootTime": "datetime",
+      "lastSeenDateTime": "datetime",
+      "operatingSystem": "string",
+      "ipAddress": "string",
+      "externalIP": "string",
+      "snmpEnabled": "boolean",
+      "monitoringThreshold": "integer"
+    }
+  ],
+  "itemsCount": "integer",
+  "totalItems": "integer"
+}
+```
+
+#### Key Fields for Domain Model
+Essential fields to map in our C# domain model:
+- `agentID`: Unique identifier for the agent
+- `customerID`: Associated customer ID
+- `customerName`: Customer business name
+- `machineName`: Name of the monitored machine
+- `onlineStatus`: Current connection status
+- `lastRebootTime`: Last system restart
+- `operatingSystem`: OS details
+- `ipAddress`: Internal IP
+- `externalIP`: Public IP
+
+This analysis will inform our C# domain model design and API integration layer implementation.C:\Work\Projects\Fiverr\Python-reference-atera-mcp-server\.
 But we should not copy any code or structures from that Python project blindly, 
 as we will follow Clean Architecture, Rich Domain Model, SOLID, and TDD/ATDD.  
 
@@ -24,7 +88,7 @@ Delivery of a complete C# MCP Server, including:
 
 #### Current Milestone: **Milestone 1: Core MCP Foundation & Initial API Tool (V0)**
 **Steps:**
-1. Create C# solution with Clean Architecture (Domain, Application, Data Access layers)
+1. Create C# solution with Clean Architecture (Domain, API, Data Access layers)
 2. Integrate Semantic Kernel and Atera API client with secure credential storage
 3. Implement `GetAgentList` MCP tool with unit tests
 4. Configure CI/CD pipeline (GitHub Actions) for local Docker deployment

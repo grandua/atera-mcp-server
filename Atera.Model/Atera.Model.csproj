@@ -6,8 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Atera.Model\Atera.Model.csproj" />
-    </ItemGroup>
-
 </Project>
