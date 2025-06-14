@@ -141,34 +141,22 @@ The core foundation is in place with the solution structure and initial tool imp
 Note: `--no-build` flag is required, otherwise connection errors may occur.
 
 ```json
-"AteraMcp": {
-  "command": "dotnet",
-  "args": [
-    "run",
-    "--project",
-    "C:\\Work\\Projects\\Atera-Mcp\\AteraMcp\\AteraMcp.csproj",
-    "--no-build"
-  ],
-  "disabled": false,
-  "autoApprove": [],
-  "debug": true,
-  "options": {
-    "shell": true,
-    "cwd": "C:\\Work\\Projects\\Atera-Mcp"
-  },
-  "env": {
-    "DOTNET_ENVIRONMENT": "Development"
-  }
-},
-"AteraMcp-minimal-working-config": {
-  "command": "dotnet",
-  "args": [
-    "run",
-    "--project",
-    "C:\\Work\\Projects\\Atera-Mcp\\AteraMcp\\AteraMcp.csproj",
-    "--no-build"
-  ]
-}
+    "AteraMcp": {
+      "command": "C:\\Users\\Grand\\.dotnet\\dotnet.exe",
+      "args": [
+        "run",
+        "--project",
+        "C:\\Work\\Projects\\Fiverr\\AteraMcpServer\\AteraMcp\\AteraMcp.csproj",
+        "--no-build"
+      ],
+      "timeout": 60,
+      "transportType": "stdio",
+      "env": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "Atera__ApiKey": "6a..."
+      },
+      "disabled": false
+    }
 ```
 
 ## Building and Running
