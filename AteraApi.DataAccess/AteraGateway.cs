@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -13,6 +14,8 @@ namespace AteraApi.DataAccess
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private const string ApiBaseUrl = "https://app.atera.com";
+        private const int DefaultPageSize = 100;
+        private const int MaxPageSize = 1000;
 
         public AteraGateway(IConfiguration configuration, HttpClient? httpClient = null)
         {
@@ -25,15 +28,47 @@ namespace AteraApi.DataAccess
                 _configuration["Atera:ApiKey"]);
         }
 
-        public async Task<IEnumerable<Agent>> GetAgentListAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Agent>> GetAgentListAsync(
+            int page = 1, 
+            int itemsInPage = DefaultPageSize,
+            CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync("/api/v3/agents", cancellationToken);
-            response.EnsureSuccessStatusCode();
-            
-            var agentList = await response.Content.ReadFromJsonAsync<AgentList>(
-                cancellationToken: cancellationToken);
+            // Validate parameters
+            if (page < 1) throw new ArgumentOutOfRangeException(nameof(page), "Page must be greater than 0");
+            itemsInPage = Math.Clamp(itemsInPage, 1, MaxPageSize);
+
+            try
+            {
+                var requestUri = $"/api/v3/agents?page={page}&itemsInPage={itemsInPage}";
+                var response = await _httpClient.GetAsync(requestUri, cancellationToken);
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return Enumerable.Empty<Agent>();
+                }
+
+                response.EnsureSuccessStatusCode();
                 
-            return agentList?.Items ?? Enumerable.Empty<Agent>();
+                var agentList = await response.Content.ReadFromJsonAsync<AgentList>(
+                    cancellationToken: cancellationToken);
+                    
+                return agentList?.Items ?? Enumerable.Empty<Agent>();
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                // TODO: Add retry logic or proper rate limit handling
+                throw new AteraApiException("API rate limit exceeded", ex);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new AteraApiException("Error calling Atera API", ex);
+            }
         }
+    }
+
+    public class AteraApiException : Exception
+    {
+        public AteraApiException(string message, Exception innerException) 
+            : base(message, innerException) { }
     }
 }
