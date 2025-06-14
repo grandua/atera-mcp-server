@@ -1,4 +1,4 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=c1d4a750_002Dc811_002D487e_002Db80e_002Dc054e5195bbd/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;AteraMcp.IntegrationTests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Project Location="C:\Work\Projects\Fiverr\AteraMcpServer\AteraMcp.IntegrationTests" Presentation="&amp;lt;AteraMcp.IntegrationTests&amp;gt;" /&gt;&#xD;
+  &lt;Project Location="C:\Work\Projects\Fiverr\AteraMcpServer\AteraApi.DataAccess.UnitTests" Presentation="&amp;lt;DataAccess&amp;gt;\&amp;lt;AteraApi.DataAccess.UnitTests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
