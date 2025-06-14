@@ -10,23 +10,23 @@ namespace AteraApi.DataAccess.UnitTests;
 
 public class AteraApiGatewayFacts
 {
-    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly HttpClient _httpClient;
-    private readonly AteraGateway _gateway;
-    private readonly Mock<IConfiguration> _mockConfig;
+    readonly Mock<HttpMessageHandler> mockHttpMessageHandler;
+    readonly HttpClient httpClient;
+    readonly AteraApiGateway gateway;
+    readonly Mock<IConfiguration> mockConfig;
 
     public AteraApiGatewayFacts()
     {
-        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _httpClient = new HttpClient(_mockHttpMessageHandler.Object)
+        mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        httpClient = new HttpClient(mockHttpMessageHandler.Object)
         {
             BaseAddress = new Uri("https://app.atera.com")
         };
         
-        _mockConfig = new Mock<IConfiguration>();
-        _mockConfig.Setup(x => x["Atera:ApiKey"]).Returns("test-api-key");
+        mockConfig = new Mock<IConfiguration>();
+        mockConfig.Setup(x => x["Atera:ApiKey"]).Returns("test-api-key");
         
-        _gateway = new AteraGateway(_mockConfig.Object, _httpClient);
+        gateway = new AteraApiGateway(mockConfig.Object, httpClient);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class AteraApiGatewayFacts
         var apiResponse = new AgentList { Items = expectedAgents, TotalItems = 2, Page = 1, ItemsInPage = 2, TotalPages = 1 };
         var jsonResponse = JsonSerializer.Serialize(apiResponse);
 
-        _mockHttpMessageHandler.Protected()
+        mockHttpMessageHandler.Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.Is<HttpRequestMessage>(req => 
@@ -56,7 +56,7 @@ public class AteraApiGatewayFacts
             });
 
         // Act
-        var result = (await _gateway.GetAgentListAsync()).ToList();
+        var result = (await gateway.GetAgentListAsync()).ToList();
 
         // Assert
         Assert.NotNull(result);

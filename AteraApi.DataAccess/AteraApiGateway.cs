@@ -9,7 +9,10 @@ using Atera.Model;
 
 namespace AteraApi.DataAccess
 {
-    public class AteraGateway
+    /// <summary>
+    /// Gateway PofEAA
+    /// </summary>
+    public class AteraApiGateway
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
@@ -17,7 +20,7 @@ namespace AteraApi.DataAccess
         private const int DefaultPageSize = 100;
         private const int MaxPageSize = 1000;
 
-        public AteraGateway(IConfiguration configuration, HttpClient? httpClient = null)
+        public AteraApiGateway(IConfiguration configuration, HttpClient? httpClient = null)
         {
             _configuration = configuration;
             _httpClient = httpClient ?? new HttpClient();

@@ -8,17 +8,20 @@ using Xunit.Abstractions;
 
 namespace AteraMcp.IntegrationTests;
 
+/// <summary>
+/// This class tests temprary MCP server debugging tools that will be removed in a final release.
+/// </summary>
 [Trait("Category", "Integration")]
-public class AteraMcpServerTests : IDisposable
+public class AteraMcpServerFacts : IDisposable
 {
     private readonly string _serverPath;
     private readonly ITestOutputHelper _output;
 
-    public AteraMcpServerTests(ITestOutputHelper output)
+    public AteraMcpServerFacts(ITestOutputHelper output)
     {
         _output = output;
         
-        var testDir = Path.GetDirectoryName(typeof(AteraMcpServerTests).Assembly.Location);
+        var testDir = Path.GetDirectoryName(typeof(AteraMcpServerFacts).Assembly.Location);
         _serverPath = Path.GetFullPath(Path.Combine(testDir!, @"..\..\..\..", "AteraMcp", "bin", "Debug", "net8.0", 
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "AteraMcp.exe" : "AteraMcp"));
 

@@ -149,6 +149,54 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
 }
 ```
 
+## Building and Running
+
+### Prerequisites
+- .NET 9 SDK (version 9.0.301 or later)
+- MCP .NET SDK
+
+### Compilation Instructions
+
+1. Navigate to the project directory:
+   ```powershell
+   cd C:\Work\Projects\Fiverr\AteraMcpServer
+   ```
+
+2. Build the solution using .NET 9:
+   ```powershell
+   C:\Users\Grand\.dotnet\dotnet.exe build
+   ```
+
+3. Run tests:
+   ```powershell
+   C:\Users\Grand\.dotnet\dotnet.exe test
+   ```
+
+## .NET 9 Compatibility
+
+- The project targets `net9.0` and uses modern .NET features
+- The MCP SDK works perfectly with .NET 9 - all warnings about .NET 9 compatibility can be safely ignored
+- Verified working with .NET 9.0.301 SDK
+
+### Troubleshooting
+
+If you encounter build issues:
+1. Clear NuGet caches:
+   ```powershell
+   dotnet nuget locals all --clear
+   ```
+
+2. Restore packages:
+   ```powershell
+   dotnet restore
+   ```
+
+3. Rebuild completely:
+   ```powershell
+   dotnet clean
+   dotnet build
+   ```
+
 ## Configuration Setup
 
 1. **API Key Configuration**:
@@ -165,3 +213,13 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
 2. **Configuration Files**:
    - `appsettings.json`: Template configuration (checked into source control)
    - `appsettings.Development.json`: Local overrides (gitignored)
+
+## Configuration
+
+API keys should be stored in user secrets (shared with AteraApi.DataAccess project):
+```json
+{
+  "Atera": {
+    "ApiKey": "your_api_key_here"
+  }
+}
