@@ -159,6 +159,54 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
     }
 ```
 
+## Docker Containerization
+
+The AteraMcp server has been dockerized for easy deployment and CI/CD integration.
+
+### Key Features
+- Multi-stage build for optimal image size
+- .NET 9 runtime optimized for console apps
+- Proper layer caching for fast rebuilds
+- Stdio communication for MCP protocol
+
+### Building the Image
+```bash
+docker build -t atera-mcp .
+```
+
+### Running the Container
+```bash
+# Basic run (stdio mode)
+docker run -it atera-mcp
+
+# With environment variables
+docker run -it -e ATERA_API_KEY=your_key atera-mcp
+```
+
+### Testing the Container
+```bash
+# Send JSON-RPC 2.0 command
+echo '{"jsonrpc":"2.0","method":"mcp-version","id":1}' | docker run -i atera-mcp
+```
+
+### CI/CD Integration
+Example GitHub Actions workflow:
+```yaml
+steps:
+  - name: Build Docker image
+    run: docker build -t atera-mcp .
+    
+  - name: Run tests
+    run: |
+      echo '{"jsonrpc":"2.0","method":"echo","params":{"message":"test"},"id":1}' \
+        | docker run -i -e ATERA_API_KEY=${{ secrets.ATERA_API_KEY }} atera-mcp
+```
+
+### Implementation Notes
+1. Uses JSON-RPC 2.0 over stdio
+2. Environment variables for configuration
+3. `.dockerignore` optimizes build context
+
 ## Building and Running
 
 ### Prerequisites
