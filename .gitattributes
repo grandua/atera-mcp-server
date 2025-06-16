@@ -1,0 +1,3 @@
+# Ensure shell scripts retain LF endings and executable bit
+*.sh text eol=lf
+*.sh executable
