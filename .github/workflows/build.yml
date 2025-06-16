@@ -1,0 +1,27 @@
+name: CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Build and Test
+        run: |
+          chmod +x ./scripts/build.sh
+          ./scripts/build.sh
+        
+      - name: Docker Build
+        run: ./scripts/docker-build.sh
+        
+      - name: Test MCP Server
+        run: |
+          echo '{"jsonrpc":"2.0","method":"mcp-version","id":1}' \
+            | docker run -i atera-mcp
