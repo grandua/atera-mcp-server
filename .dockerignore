@@ -1,0 +1,55 @@
+# Ignore version control
+.git/
+.gitignore
+.gitmodules
+.gitattributes
+
+# Ignore build artifacts
+**/bin/
+**/obj/
+
+# Ignore IDE and editor files
+**/*.user
+**/*.suo
+**/*.vscode
+.vs/
+.idea/
+
+# Ignore test results
+TestResults/
+*.trx
+
+# Ignore NuGet packages
+**/packages/
+*.nupkg
+
+# Ignore local development configs
+**/appsettings.Development.json
+**/launchSettings.json
+
+# Ignore Docker files (except the ones we need)
+docker-compose*
+!.dockerignore
+!Dockerfile
+
+# Ignore temporary files
+*.swp
+*.swo
+*.tmp
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore compiled outputs
+*.dll
+*.exe
+*.pdb
+
+# Ignore development tools
+node_modules/
+bower_components/
+
+# Ignore local secrets
+*.env
+*.secret
