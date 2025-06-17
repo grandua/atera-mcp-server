@@ -235,35 +235,65 @@ steps:
 
 ## Testing
 
-### WSL Environment
+### One-shot CI/CD Verification
 
-#### Debug Build & Test
-```bash
-cd /mnt/c/Work/Projects/Fiverr/AteraMcpServer
-export Atera__ApiKey='your_api_key_here'
-dotnet build AteraMcp.sln -c Debug
-dotnet test AteraMcp.sln -c Debug --no-build
+Use the helper scripts to execute the full cross-environment test plan locally.
+
+#### Linux / WSL
+
+Run from **Windows Terminal** using the built-in `wsl` command (no need to open a separate WSL window):
+
+```powershell
+# Windows PowerShell / CMD
+wsl bash -c "cd /mnt/c/Work/Projects/Fiverr/AteraMcpServer && chmod +x scripts/test-ci-cd.sh && ./scripts/test-ci-cd.sh"
 ```
 
-#### Release Build & Test
+Or, if you are already **inside** a WSL shell:
+
 ```bash
 cd /mnt/c/Work/Projects/Fiverr/AteraMcpServer
-export Atera__ApiKey='your_api_key_here'
-./scripts/build.sh
+chmod +x scripts/test-ci-cd.sh   # first time only
+./scripts/test-ci-cd.sh
 ```
 
-### API Key Options
-1. Set environment variable (recommended):
-   ```bash
-   export Atera__ApiKey='your_key_here'
-   ```
-2. Or create `.atera_apikey` file in project root
-3. If neither is set, tests requiring API access will fail
+#### Windows PowerShell
+```powershell
+# From a Developer PowerShell prompt
+# -ApiKey parameter is optional if the variable or .atera_apikey exists
+.\scripts\test-ci-cd.ps1 -ApiKey 'your_api_key_here'
+```
+
+The scripts perform:
+1. Debug & Release builds/tests via `build.sh` / `build.ps1`.
+2. CI pipeline emulation with [`act`](https://github.com/nektos/act).
+3. Docker image build and in-container integration tests.
+4. (PowerShell) Native Windows Debug/Release test runs.
+
+### API Key Handling
+The project looks for the Atera API key in this order:
+1. **Environment variable** `Atera__ApiKey` (preferred).
+2. **`.atera_apikey`** plaintext file in the repository root (convenience only—git-ignored by default).
+
+If neither is provided, integration tests that reach the Atera API will be skipped/fail gracefully.
+
+### Automatic act Caching
+
+The test script will automatically:
+1. Check for a locally cached `act` in `.bin/` directory
+2. Use system-wide `act` if available
+3. Install and cache `act` locally if missing
+
+No manual installation is required - the script handles everything.
 
 ## Building and Running
 
 ### Prerequisites
 - .NET 9 SDK (version 9.0.301 or later)
+- Docker Desktop with WSL 2 integration enabled
+  - Go to Settings -> Resources -> WSL Integration and enable for your distro
+- GitHub CLI (optional, for CI simulation)
+- PowerShell 7+ (for Windows scripts)
+- Bash (for Linux/WSL scripts)
 - MCP .NET SDK
 
 ### Compilation Instructions

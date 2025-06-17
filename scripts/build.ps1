@@ -1,62 +1,60 @@
-# PowerShell build script equivalent to build.sh, with detailed output and transcript logging
+# PowerShell build script for cross-platform CI/CD
 $ErrorActionPreference = "Stop"
 $transcriptPath = Join-Path $PSScriptRoot "..\build-script.log"
 Start-Transcript -Path $transcriptPath -Append
 
-Write-Host "=== PowerShell Build Script Started ===" -ForegroundColor Cyan
+# Configuration
+$CONFIG = if ($env:BUILD_CONFIGURATION) { $env:BUILD_CONFIGURATION } else { "Release" }
 
-# Detect platform and set workspace path accordingly
-if ($env:GITHUB_WORKSPACE) {
-    $CONTAINER_WORKSPACE = $env:GITHUB_WORKSPACE
-} elseif ([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) {
-    $CONTAINER_WORKSPACE = "C:\Work\Projects\Fiverr\AteraMcpServer"
-} else {
-    $CONTAINER_WORKSPACE = "/mnt/c/Work/Projects/Fiverr/AteraMcpServer"
-}
-try {
-    Write-Host "Navigating to: $CONTAINER_WORKSPACE" -ForegroundColor Yellow
-    Set-Location $CONTAINER_WORKSPACE -ErrorAction Stop
-    Write-Host "Current directory: $(Get-Location)" -ForegroundColor Green
-} catch {
-    Write-Host "ERROR: Failed to navigate to $CONTAINER_WORKSPACE" -ForegroundColor Red
-    Write-Host "Error details: $_" -ForegroundColor Red
-    Stop-Transcript
-    exit 1
-}
+Write-Host "=== PowerShell Build Script Started (Config: $CONFIG) ===" -ForegroundColor Cyan
 
-# Debug info
-Write-Host "--- Directory Contents ---" -ForegroundColor Yellow
-Get-ChildItem | Format-Table Name, LastWriteTime -AutoSize
-Write-Host ""
+# Workspace detection
+$WORKSPACE = if ($env:GITHUB_WORKSPACE) { $env:GITHUB_WORKSPACE } else { $PSScriptRoot | Split-Path -Parent | Split-Path -Parent }
 
-# Verify solution exists
-if (-not (Test-Path "AteraMcp.sln")) {
-    Write-Host "ERROR: Solution file not found at: $(Get-Location)/AteraMcp.sln" -ForegroundColor Red
-    Stop-Transcript
-    exit 1
-}
-
-# Build commands with output and error handling
-$commands = @(
-    { dotnet restore "AteraMcp.sln" },
-    { dotnet build "AteraMcp.sln" -c Release --no-restore },
-    { dotnet test "AteraMcp.sln" -c Release --no-build --no-restore }
-)
-
-foreach ($cmd in $commands) {
-    $cmdName = $cmd.ToString().Trim('{}').Trim()
-    Write-Host "Executing: $cmdName" -ForegroundColor Yellow
-    try {
-        & $cmd
-        Write-Host "SUCCESS: $cmdName" -ForegroundColor Green
-    } catch {
-        Write-Host "FAILED: $cmdName" -ForegroundColor Red
-        Write-Host "Error: $_" -ForegroundColor Red
-        Stop-Transcript
-        exit 1
+# API key handling: fallback to .atera_apikey file
+if (-not $env:Atera__ApiKey) {
+    $keyFile = Join-Path $WORKSPACE ".atera_apikey"
+    if (Test-Path $keyFile) {
+        $env:Atera__ApiKey = (Get-Content $keyFile -Raw).Trim()
+        Write-Host "Loaded Atera__ApiKey from .atera_apikey file" -ForegroundColor Green
+    } else {
+        Write-Host "Warning: Atera__ApiKey not set and .atera_apikey file not found. Integration tests may fail." -ForegroundColor Yellow
     }
 }
 
-Write-Host "=== PowerShell Build Script Completed Successfully ===" -ForegroundColor Cyan
-Stop-Transcript
+# Solution verification
+try {
+    Set-Location $WORKSPACE -ErrorAction Stop
+    if (-not (Test-Path "AteraMcp.sln")) {
+        throw "Solution file not found in $WORKSPACE"
+    }
+    Write-Host "Solution verified in $(Get-Location)" -ForegroundColor Green
+}
+catch {
+    Write-Host "ERROR: $_" -ForegroundColor Red
+    Stop-Transcript
+    exit 1
+}
 
+# Build pipeline
+try {
+    # Restore
+    Write-Host "Restoring dependencies..." -ForegroundColor Yellow
+    dotnet restore
+    
+    # Build
+    Write-Host "Building solution ($CONFIG configuration)..." -ForegroundColor Yellow
+    dotnet build -c $CONFIG --no-restore
+    
+    # Test
+    Write-Host "Running tests ($CONFIG configuration)..." -ForegroundColor Yellow
+    dotnet test -c $CONFIG --no-build --no-restore
+}
+catch {
+    Write-Host "BUILD FAILED: $_" -ForegroundColor Red
+    Stop-Transcript
+    exit 1
+}
+
+Write-Host "Build completed successfully" -ForegroundColor Green
+Stop-Transcript

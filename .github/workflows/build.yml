@@ -1,13 +1,17 @@
 name: CI/CD Pipeline
 
-on: [push]
+on: [push, pull_request]
 
 env:
   ATERA_API_KEY: ${{ secrets.ATERA_API_KEY }}
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        configuration: [Debug, Release]
+    runs-on: ${{ matrix.os }}
     
     steps:
       - uses: actions/checkout@v4
@@ -16,14 +20,19 @@ jobs:
           dotnet-version: '9.0.x'
           cache-dependency-path: '**/*.csproj'
           
-      - name: Build and Test
-        run: |
-          chmod +x ./scripts/build.sh
-          ./scripts/build.sh
+      - name: Restore
+        run: dotnet restore
         env:
           Atera__ApiKey: ${{ env.ATERA_API_KEY }}
+          
+      - name: Build
+        run: dotnet build -c ${{ matrix.configuration }} --no-restore
+        
+      - name: Test
+        run: dotnet test -c ${{ matrix.configuration }} --no-build --no-restore
         
       - name: Docker Build
+        if: matrix.os == 'ubuntu-latest' && matrix.configuration == 'Release'
         run: |
           ./scripts/docker-build.sh
           docker image prune -f
@@ -32,11 +41,10 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         
       - name: Integration Test
+        if: matrix.os == 'ubuntu-latest' && matrix.configuration == 'Release'
         run: |
           echo 'Testing MCP server version:'
           echo '{"jsonrpc":"2.0","method":"mcp-version","id":1}' | \
             docker run --rm -i atera-mcp
-          
-          echo 'Running full test suite:'
           docker run --rm -e Atera__ApiKey=${{ env.ATERA_API_KEY }} \
             atera-mcp dotnet test AteraMcp.IntegrationTests.dll
