@@ -20,14 +20,24 @@ public class AteraMcpServerFacts : IDisposable
     public AteraMcpServerFacts(ITestOutputHelper output)
     {
         _output = output;
-        
         var testDir = Path.GetDirectoryName(typeof(AteraMcpServerFacts).Assembly.Location);
-        _serverPath = Path.GetFullPath(Path.Combine(testDir!, @"..\..\..\..", "AteraMcp", "bin", "Debug", "net8.0", 
-            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "AteraMcp.exe" : "AteraMcp"));
+        // Robustly resolve the build configuration and platform using solution root and project output
+        var testAssemblyDir = Path.GetDirectoryName(typeof(AteraMcpServerFacts).Assembly.Location)!;
+        var assemblyDirInfo = new DirectoryInfo(testAssemblyDir);
+        var tfmName = assemblyDirInfo.Name; // e.g. net9.0
+        var configName = assemblyDirInfo.Parent!.Name; // e.g. Debug or Release
+        var solutionRoot = Path.GetFullPath(Path.Combine(testAssemblyDir, "../../../../"));
+        var exeName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "AteraMcp.exe" : "AteraMcp";
+        var ateraMcpExePath = Path.Combine(solutionRoot, "AteraMcp", "bin", configName, tfmName, exeName);
 
+        _serverPath = ateraMcpExePath;
+        Console.WriteLine($"EXE PATH: {_serverPath}");
         if (!File.Exists(_serverPath))
         {
-            throw new InvalidOperationException($"Could not find AteraMcp executable at: {_serverPath}");
+            throw new FileNotFoundException(
+                $"Could not find AteraMcp executable at: {_serverPath}",
+                $"Checked from: {Directory.GetCurrentDirectory()}"
+            );
         }
         process = new TestProcess(_serverPath, _output);
         process.Start();

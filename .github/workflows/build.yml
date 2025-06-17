@@ -2,6 +2,9 @@ name: CI/CD Pipeline
 
 on: [push]
 
+env:
+  ATERA_API_KEY: ${{ secrets.ATERA_API_KEY }}
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -17,14 +20,23 @@ jobs:
         run: |
           chmod +x ./scripts/build.sh
           ./scripts/build.sh
+        env:
+          Atera__ApiKey: ${{ env.ATERA_API_KEY }}
         
       - name: Docker Build
-        run: ./scripts/docker-build.sh
+        run: |
+          ./scripts/docker-build.sh
+          docker image prune -f
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         
-      - name: Test MCP Server
+      - name: Integration Test
         run: |
-          echo '{"jsonrpc":"2.0","method":"mcp-version","id":1}' \
-            | docker run -i atera-mcp
+          echo 'Testing MCP server version:'
+          echo '{"jsonrpc":"2.0","method":"mcp-version","id":1}' | \
+            docker run --rm -i atera-mcp
+          
+          echo 'Running full test suite:'
+          docker run --rm -e Atera__ApiKey=${{ env.ATERA_API_KEY }} \
+            atera-mcp dotnet test AteraMcp.IntegrationTests.dll

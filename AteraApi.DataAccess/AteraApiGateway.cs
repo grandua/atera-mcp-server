@@ -29,6 +29,18 @@ namespace AteraApi.DataAccess
                 new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("X-API-KEY", 
                 _configuration["Atera:ApiKey"]);
+
+            // --- TEMPORARY DEBUGGING --- 
+            var apiKeyFromConfig = _configuration["Atera:ApiKey"];
+            if (!string.IsNullOrEmpty(apiKeyFromConfig))
+            {
+                System.Diagnostics.Debug.WriteLine($"--- DEBUG ATERA API KEY --- Key 'Atera:ApiKey' from IConfiguration: ****{apiKeyFromConfig.Substring(apiKeyFromConfig.Length - Math.Min(4, apiKeyFromConfig.Length))}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("--- DEBUG ATERA API KEY --- Key 'Atera:ApiKey' from IConfiguration is NULL or EMPTY.");
+            }
+            // --- END TEMPORARY DEBUGGING ---
         }
 
         public async Task<IEnumerable<Agent>> GetAgentListAsync(

@@ -233,6 +233,33 @@ steps:
 2. Environment variables for configuration
 3. `.dockerignore` optimizes build context
 
+## Testing
+
+### WSL Environment
+
+#### Debug Build & Test
+```bash
+cd /mnt/c/Work/Projects/Fiverr/AteraMcpServer
+export Atera__ApiKey='your_api_key_here'
+dotnet build AteraMcp.sln -c Debug
+dotnet test AteraMcp.sln -c Debug --no-build
+```
+
+#### Release Build & Test
+```bash
+cd /mnt/c/Work/Projects/Fiverr/AteraMcpServer
+export Atera__ApiKey='your_api_key_here'
+./scripts/build.sh
+```
+
+### API Key Options
+1. Set environment variable (recommended):
+   ```bash
+   export Atera__ApiKey='your_key_here'
+   ```
+2. Or create `.atera_apikey` file in project root
+3. If neither is set, tests requiring API access will fail
+
 ## Building and Running
 
 ### Prerequisites
