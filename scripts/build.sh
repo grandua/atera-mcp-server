@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+set -e
+
+# Create Logs directory if it doesn't exist
+LOG_DIR="$(dirname "$(realpath "$0")")/../Logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/build-$(date +'%Y%m%d-%H%M%S').log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "=== Build started at $(date) ==="
+echo "Logging to: $LOG_FILE"
 
 # Configuration
 CONFIG=${BUILD_CONFIGURATION:-Release}
@@ -38,12 +48,7 @@ fi
 
 echo -e "${GREEN}Solution verified${NC}"
 
-# Logging
-LOG_FILE="build-script.log"
-exec > >(tee -a "$LOG_FILE") 2>&1
-
 # Build pipeline
-set -e
 
 echo -e "${YELLOW}Restoring dependencies...${NC}"
 dotnet restore "AteraMcp.sln"
@@ -55,3 +60,5 @@ echo -e "${YELLOW}Running tests ($CONFIG configuration)...${NC}"
 dotnet test "AteraMcp.sln" -c $CONFIG --no-build --no-restore
 
 echo -e "${CYAN}Build completed successfully${NC}"
+
+echo "=== Build completed at $(date) ==="

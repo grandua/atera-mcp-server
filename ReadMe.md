@@ -185,6 +185,31 @@ To build and push Docker images from GitHub Actions, you need to set up secrets 
 
 These secrets will be used by the GitHub Actions workflow to authenticate with Docker Hub.
 
+### Analyzing Test Logs
+
+The CI/CD test scripts (`test-ci-cd.sh` and `test-ci-cd.ps1`) generate detailed logs in the `Logs/` directory. Here’s how to effectively read them using PowerShell.
+
+**Basic Command:**
+
+The standard command to view a file's content is `Get-Content`:
+
+```powershell
+Get-Content .\Logs\test-ci-cd-YYYYMMDD-HHMMSS.log
+```
+
+**Gotchas and Best Practices:**
+
+1.  **Slow on Large Files:** The test scripts can generate very large log files. Running `Get-Content` on a large file can be slow and make it seem like the command is stuck. To quickly check the most recent activity, use the `-Tail` parameter to view the last N lines.
+
+    ```powershell
+    # Shows the last 50 lines of the log, which is much faster
+    Get-Content .\Logs\<log-file-name>.log -Tail 50
+    ```
+
+2.  **Real-time Feedback:** The PowerShell script now uses `Tee-Object` to show command output in the console in real-time *while also* writing it to the log file. This is crucial for monitoring the progress of long-running commands (like `dotnet test` or `docker build`) and confirming they aren’t stuck.
+
+3.  **`.gitignore` and Tooling:** The project's `.gitignore` file contains the rule `*.log`. This is a best practice, but it can prevent some IDE tools or automated agents from accessing log files. If a tool reports that it cannot access a log file, the workaround is to use a direct `Get-Content` command from a standard PowerShell terminal, as this is not subject to the same restrictions.
+
 ## Docker Containerization
 
 The AteraMcp server has been dockerized for easy deployment and CI/CD integration.
