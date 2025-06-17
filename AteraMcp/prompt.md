@@ -8,16 +8,27 @@ testable both locally (via scripts`and with act`) and in GitHub Actions runners 
 
 ## High-Level Plan (checked off sequentially)
 
-- [ ] 1. Install **act** on Windows 10 (see “Act installation” below)  
-- [ ] 2. Verify **act** works: `act --list` shows default workflows  
-- [ ] 3. Scaffold `.github/workflows/build.yml` that delegates almost everything to scripts  
-- [ ] 4. Add cross-platform scripts under `/scripts`  
+### Completed Tasks
+- [x] 1. Install **act** on Windows 10 (see “Act installation” below)  
+- [x] 2. Verify **act** works: `act --list` shows default workflows  
+- [x] 3. Scaffold `.github/workflows/build.yml` that delegates almost everything to scripts  
+- [x] 4. Add cross-platform scripts under `/scripts`  
   - `build.ps1` / `build.sh` — dotnet restore + build + test  
   - `docker-build.ps1` / `docker-build.sh` — build Docker image using **Dockerfile**  
   - `deploy-local.ps1` / `deploy-local.sh` — run image locally for smoke tests  
-- [ ] 5. Run those scripts first directly, and second with **act** until they pass  
-- [ ] 6. Push to `main`; GitHub Actions must go green  
-- [ ] 7. Document one-liner developer usage in `ReadMe.md`
+- [x] 5. Run those scripts first directly, and second with **act** until they pass  
+- [x] 6. Push to `main`; GitHub Actions must go green  
+- [x] 7. Document one-liner developer usage in `ReadMe.md`
+
+### Next Steps
+1. **Final CI/CD Verification**:
+   - [ ] Test complete workflow locally with `act`
+   - [ ] Push to GitHub to verify remote execution
+
+2. **Optional Improvements**:
+   - [ ] Address remaining nullability warnings
+   - [ ] Add MCP server health checks
+   - [ ] Document container deployment
 
 ---
 
@@ -139,3 +150,26 @@ Confidence Level: 100%
 [10] https://www.youtube.com/watch?v=YORvmxQBPeM
 [11] https://docs.github.com/articles/getting-started-with-github-actions
 [12] https://techaiinsights.in/local-ci-cd-testing-github-actions-act/
+
+### Troubleshooting
+
+#### Docker Credential Errors
+If you encounter:
+```
+error getting credentials - err: exec: "docker-credential-desktop": executable file not found in %PATH%
+```
+
+1. Authenticate manually:
+   ```powershell
+   docker login
+   ```
+   
+2. Alternatively, configure Docker to use Windows Credential Manager:
+   ```powershell
+   @"
+   {
+     "credsStore": "wincred"
+   }
+   "@ | Set-Content -Path "$env:USERPROFILE\.docker\config.json" -Force
+   ```
+   Then restart Docker Desktop.

@@ -159,6 +159,32 @@ Note: `--no-build` flag is required, otherwise connection errors may occur.
     }
 ```
 
+## Environment Setup
+
+1. Create a `.env` file for local testing:
+```ini
+DOCKER_USERNAME=your_dockerhub_username
+DOCKER_PASSWORD=your_dockerhub_password
+```
+
+2. For GitHub Actions, add repository secrets:
+- `DOCKER_USERNAME`: Your Docker Hub username
+- `DOCKER_PASSWORD`: Your Docker Hub password/access token
+
+## Setting Up GitHub Secrets
+
+To build and push Docker images from GitHub Actions, you need to set up secrets for your Docker Hub credentials:
+
+1. Navigate to your GitHub repository.
+2. Click on **Settings**.
+3. In the left sidebar, click on **Secrets and variables** > **Actions**.
+4. Click **New repository secret**.
+5. Create the following secrets:
+   - `DOCKER_USERNAME`: Your Docker Hub username
+   - `DOCKER_PASSWORD`: Your Docker Hub password or access token
+
+These secrets will be used by the GitHub Actions workflow to authenticate with Docker Hub.
+
 ## Docker Containerization
 
 The AteraMcp server has been dockerized for easy deployment and CI/CD integration.
