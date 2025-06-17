@@ -1,0 +1,9 @@
+repository:
+  name: atera-mcp-server
+  private: true
+  homepage: https://github.com/grandua/atera-mcp-server
+  has_issues: true
+  has_projects: true
+  has_wiki: true
+  has_downloads: true
+  visibility: private
